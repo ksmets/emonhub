@@ -4,8 +4,10 @@
 import time
 import paho.mqtt.client as mqtt
 from pydispatch import dispatcher
+import emonhub_coder as ehc
 from emonhub_interfacer import EmonHubInterfacer
 import Cargo
+from influx_format import convert_cargo_to_influx_line_format
 
 class EmonHubMqttInterfacer(EmonHubInterfacer):
 
@@ -32,6 +34,10 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
             # nodes/emontx/power1 format
             'nodevar_format_enable': 0,
             'nodevar_format_basetopic': "nodes/"
+
+            # influx line format
+            'influx_format_enable': 0,
+            'influx_format_basetopic': 'emonhub/'
         };
 
         self._mqttc = mqtt.Client()
@@ -160,7 +166,21 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
                 if result[0]==4:
                     self._log.info("Publishing error? returned 4")
                 
-    
+            # ----------------------------------------------------------
+            # Influx line format
+            # ----------------------------------------------------------
+            if int(self._settings['influx_format_enable']) == 1:
+                cargo.scales = [float(s) for s in ehc.nodelist[cargo.nodeid]['rx']['scales'].split(',')]
+                cargo.enabled = [bool(int(b)) for b in ehc.nodelist[cargo.nodeid]['rx']['enabled'].split(',')]
+
+                topic = self._settings['influx_format_basetopic']
+                payload = convert_cargo_to_influx_line_format(cargo)
+
+                self._log.info('Publishing: ' + topic + ' ' + payload)
+                result = self._mqttc.publish(topic, payload=payload, qos=2, retain=False)
+                if result[0] == 4:
+                     self._log.info('Publishing error? returned 4')
+
     def set(self, **kwargs):
         for key,setting in self._settings.iteritems():
             if key in kwargs.keys():
