@@ -33,7 +33,7 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
             
             # nodes/emontx/power1 format
             'nodevar_format_enable': 0,
-            'nodevar_format_basetopic': "nodes/"
+            'nodevar_format_basetopic': "nodes/",
 
             # influx line format
             'influx_format_enable': 0,
