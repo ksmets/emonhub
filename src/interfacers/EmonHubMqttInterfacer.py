@@ -170,8 +170,9 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
             # Influx line format
             # ----------------------------------------------------------
             if int(self._settings['influx_format_enable']) == 1:
-                cargo.scales = [float(s) for s in ehc.nodelist[cargo.nodeid]['rx']['scales'].split(',')]
-                cargo.enabled = [bool(int(b)) for b in ehc.nodelist[cargo.nodeid]['rx']['enabled'].split(',')]
+                node = str(cargo.nodeid)
+                cargo.scales = [float(s) for s in ehc.nodelist[node]['rx']['scales'].split(',')]
+                cargo.enabled = [bool(int(b)) for b in ehc.nodelist[node]['rx']['enabled'].split(',')]
 
                 topic = self._settings['influx_format_basetopic']
                 payload = convert_cargo_to_influx_line_format(cargo)
