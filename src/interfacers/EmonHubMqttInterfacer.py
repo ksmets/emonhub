@@ -37,7 +37,7 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
 
             # influx line format
             'influx_format_enable': 0,
-            'influx_format_basetopic': 'emonhub/'
+            'influx_format_topic': 'emonhub'
         };
 
         self._mqttc = mqtt.Client()
@@ -174,7 +174,7 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
                 cargo.scales = [float(s) if '.' in s else int(s) for s in ehc.nodelist[node]['rx']['scales']]
                 cargo.enabled = [bool(int(b)) for b in ehc.nodelist[node]['rx']['enabled']]
 
-                topic = self._settings['influx_format_basetopic']
+                topic = self._settings['influx_format_topic']
                 payload = convert_cargo_to_influx_line_format(cargo)
 
                 self._log.info('Publishing: ' + topic + ' ' + payload)
