@@ -11,7 +11,7 @@ class EmonHubCargo(object):
     rssi = 0
 
     # The class "constructor" - It's actually an initializer
-    def __init__(self, timestamp, target, nodeid, nodename, names, realdata, rssi, rawdata):
+    def __init__(self, timestamp, target, nodeid, nodename, names, realdata, rssi, rawdata, scales, enabled):
         EmonHubCargo.uri += 1
         self.uri = EmonHubCargo.uri
         self.timestamp = float(timestamp)
@@ -25,12 +25,13 @@ class EmonHubCargo(object):
         # self.datacodes = []
         # self.datacode = ""
         # self.scale = 0
-        # self.scales = []
+        self.scales = scales
         self.rawdata = rawdata
         self.encoded = {}
         # self.realdatacodes = []
+        self.enabled = enabled
 
-def new_cargo(rawdata="", nodename=False, names=[], realdata=[], nodeid=0, timestamp=0.0, target=0, rssi=0.0):
+def new_cargo(rawdata="", nodename=False, names=[], realdata=[], nodeid=0, timestamp=0.0, target=0, rssi=0.0, scales=[], enabled=[]):
     """
 
     :rtype : object
@@ -38,5 +39,5 @@ def new_cargo(rawdata="", nodename=False, names=[], realdata=[], nodeid=0, times
 
     if not timestamp:
         timestamp = time.time()
-    cargo = EmonHubCargo(timestamp, target, nodeid, nodename, names, realdata, rssi, rawdata)
+    cargo = EmonHubCargo(timestamp, target, nodeid, nodename, names, realdata, rssi, rawdata, scales, enabled)
     return cargo
