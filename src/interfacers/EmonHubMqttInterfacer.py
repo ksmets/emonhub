@@ -171,7 +171,7 @@ class EmonHubMqttInterfacer(EmonHubInterfacer):
             # ----------------------------------------------------------
             if int(self._settings['influx_format_enable']) == 1:
                 node = str(cargo.nodeid)
-                cargo.scales = [float(s) for s in ehc.nodelist[node]['rx']['scales']]
+                cargo.scales = [float(s) if '.' in s else int(s) for s in ehc.nodelist[node]['rx']['scales']]
                 cargo.enabled = [bool(int(b)) for b in ehc.nodelist[node]['rx']['enabled']]
 
                 topic = self._settings['influx_format_basetopic']
